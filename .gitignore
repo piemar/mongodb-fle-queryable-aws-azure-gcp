@@ -1,0 +1,24 @@
+.pyc
+.venv*
+__pycache__
+csfle_vault_kmip/kmip/pykmip.log
+csfle_vault_kmip/jsonSchema.json
+csfle_vault_kmip/mongocryptd.pid
+.DS_Store
+vault/data/logical/**
+csfle_vault_kmip/configuration_local.py
+kmip-with-hashicorp-key-vault/configuration_local.py
+kmip-with-hashicorp-key-vault/configuration_local_fle.py
+kmip-with-hashicorp-key-vault/configuration_local_queryable.py
+mongocryptd.pid
+local/configuration_fle_LOCAL copy.py
+local/configuration_fle_LOCAL.py
+local/secrets
+local/policy.json
+local/configuration_fle_LOCAL_NO1.py
+samples/aws/application/python/configuration_csfle_SHOW.py
+samples/aws/kms-setup/local/credentials.env
+samples/aws/kms-setup/local/configuration_fle_LOCAL.py
+samples/aws/kms-setup/local/notes.txt
+samples/aws/kms-setup/local/policy.json
+samples/aws/kms-setup/local/secrets

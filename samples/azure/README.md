@@ -1,0 +1,1 @@
+TODO: Azure example, fully automated

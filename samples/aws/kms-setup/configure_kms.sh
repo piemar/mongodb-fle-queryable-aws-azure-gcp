@@ -1,5 +1,5 @@
 #!/bin/bash
-#. ./credentials.env
+. ./credentials.env
 
 aws kms --region $AWS_REGION create-key > output_kms.json
 

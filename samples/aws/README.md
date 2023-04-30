@@ -55,7 +55,7 @@ A prebaked docker image that has all prequisites installed such as mongodb share
 # Start docker container - Initializing KMS Setup
 docker run -it --rm  --env-file=samples/aws/kms-setup/credentials.env  -v ${PWD}:/workspace  piepet/iaac-aws-gcp-azure
 # Run configuration of KMS provider, will create AWS KMS key, IAM Policy and Trust Policy
-cd samples/aws/kms-setup/
+cd /workspace/samples/aws/kms-setup/
 source ./configure_kms.sh
 ```
 

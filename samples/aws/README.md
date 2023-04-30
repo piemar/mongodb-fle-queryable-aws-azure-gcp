@@ -13,8 +13,6 @@ If you do not want to use the docker image and set this up on your own, follow i
 # Prequisites 
 ## A running Atlas cluster 
 https://www.mongodb.com/cloud/atlas/signup
-## Create AWS KMS Key</br>
-https://www.mongodb.com/docs/manual/core/csfle/tutorials/aws/aws-automatic/#create-the-customer-master-key
 ## Create IAM User</br>
 https://www.mongodb.com/docs/manual/core/csfle/tutorials/aws/aws-automatic/#create-an-aws-iam-user
 
@@ -35,23 +33,40 @@ __Envelope encryption__ is the practice of encrypting plain text data with a dat
 * A Python application that usses AWS KMS with MongoDB Driver
 * Application inserts a document with where some fields are CSFLE and Queryable Encryption enabled.
 
-# Update MongoDB Atlas connection string
-For FLE: Change String in file configuration_fle.py line 3, Replace USER, PASSWORD, CLUSTER NAME with your Atlas Connection String
+# Update MongoDB connection settings and Cloud provider authentication configuration
+You will only need to update the credentials.env file with you your aws credentials(or other cloud provider). 
 
-For Queryable: Change String in file configuration_queryable.py line 3, Replace USER, PASSWORD, CLUSTER NAME with your Atlas Connection String
+Update the only the following fields in the file  /mongodb-fle-queryable-aws-azure-gcp/samples/aws/kms-setup/credentials.env.
+```
+MONGODB_CONNECTION_STRING="mongodb+srv://user:XXX@demo-cluster.tcrpd.mongodb.net/?retryWrites=true"
+USER='piepet'
+AWS_ACCESS_KEY_ID='XXXXXX'
+AWS_SECRET_ACCESS_KEY='XXXXX'
+AWS_REGION='eu-central-1'
+AWS_DEFAULT_REGION="$AWS_REGION"
+```
 
-```
-connection_uri = "mongodb+srv://<USER>:<PASSWORD>@<CLUSTER-NAME>/?retryWrites=true&w=majority"
-```
+There are two fields that should not be changed, as they will be replaced once you run the configure_kms.sh.
+
 # Start Docker Container
-A prebaked docker image that has all prequisites installed such as mongodb shared library, start container in root of this repo
-```
-docker container run -it --rm -e CLOUD_ACCESS_KEY_ID -e CLOUD_SECRET_ACCESS_KEY -e CLOUD_DEFAULT_REGION -v ${PWD}:/workspace piepet/iaac-aws-gcp-azure
-```
+A prebaked docker image that has all prequisites installed such as mongodb shared library, start container in root of this repo.
 
+```
+# Start docker container - Initializing KMS Setup
+docker run -it --rm  --env-file=samples/aws/kms-setup/credentials.env  -v ${PWD}:/workspace  piepet/iaac-aws-gcp-azure
+# Run configuration of KMS provider, will create AWS KMS key, IAM Policy and Trust Policy
+cd samples/aws/kms-setup/
+source ./configure_kms.sh
+```
 
 # Test AWS as KMS provider
 Python application that inserts a document with CSFLE configured. CSFLE is configured to use AWS KMS KMS provider.
+
+```
+# Demo application that demonstrates CSFLE with AWS KMS Provider with client side schema
+cd /workspace/samples/aws/appliction/python
+python3.8 demo_aws_csfle_client_schema.py
+``
 
 ## CSFLE Schema Stored in Database
 Will create a database with name DEMO-AWS-FLE where the keyvault collection and the user collection will be created. The CSFLE schema will be stored in database, as a validation see below.
@@ -59,17 +74,8 @@ Will create a database with name DEMO-AWS-FLE where the keyvault collection and 
 <img src="img/fle_backend_validation.png" width="200">
 
 ```
-cd /aws
+cd /workspace/samples/aws/appliction/python
 python3.8 demo_aws_csfle.py
-```
-
-## CSFLE Schema Stored in Client
-Will create a database with name DEMO-FLE where the keyvault collection and the user collection will be created.
-The CSFLE schema will be only on the client side, as a validation see below.
-
-```
-cd /aws
-python3.8 demo_aws_csfle_queryable.py
 ```
 
 You should now see the following in the DEMO-AWS-FLE.users
@@ -80,7 +86,7 @@ You should now see the following in the DEMO-AWS-FLE.users
 Will create a database with name DEMO-AWS-QUERYABLE where the keyvault collection and the user collection will be created.
 
 ```
-cd /aws
+cd /workspace/samples/aws/appliction/python
 python3.8 demo_aws_queryable.py
 ```
 
@@ -102,11 +108,17 @@ Before running rotate:
 <br/>
 <img src="img/key_rotation_before.png" width="100%">
 
+
+
 ```
 ## FLE MasterKeys and DEKS
+cd /workspace/samples/aws/appliction/python
 python3.8 rotate_fle.py
+```
 
+```
 ## Queryable Encryption MasterKeys and DEKS
+cd /workspace/samples/aws/appliction/python
 python3.8 rotate_queryable.py 
 ```
 After running rotate:
@@ -116,9 +128,9 @@ After running rotate:
 # Cleanup
 If you want to rerun setup, delete vault/data folder. only the data folder. Run the following in root of this pov.
 ```
+cd /workspace/samples/aws/kms-setup
 ./cleanup.sh
 ```
-
 
 # Additional Resources
 

@@ -14,7 +14,8 @@ If you do not want to use the docker image and set this up on your own, follow i
 ## A running Atlas cluster 
 https://www.mongodb.com/cloud/atlas/signup
 ## Create IAM User</br>
-https://www.mongodb.com/docs/manual/core/csfle/tutorials/aws/aws-automatic/#create-an-aws-iam-user
+<a href="img/aws-setup/README.md"> Create an AWS IAM use </a>
+
 
 # Encryption Terminoligy
 <img src="img/envelope_encryption.png"></br>
@@ -36,7 +37,7 @@ __Envelope encryption__ is the practice of encrypting plain text data with a dat
 # Update MongoDB connection settings and Cloud provider authentication configuration
 You will only need to update the credentials.env file with you your aws credentials(or other cloud provider). 
 
-Update the only the following fields in the file  /mongodb-fle-queryable-aws-azure-gcp/samples/aws/kms-setup/credentials.env.
+Update the ONLY the following fields in the file  /mongodb-fle-queryable-aws-azure-gcp/samples/aws/kms-setup/credentials.env.
 ```
 MONGODB_CONNECTION_STRING="mongodb+srv://user:XXX@demo-cluster.tcrpd.mongodb.net/?retryWrites=true"
 USER='piepet'
@@ -45,8 +46,6 @@ AWS_SECRET_ACCESS_KEY='XXXXX'
 AWS_REGION='eu-central-1'
 AWS_DEFAULT_REGION="$AWS_REGION"
 ```
-
-There are two fields that should not be changed, as they will be replaced once you run the configure_kms.sh.
 
 # Start Docker Container
 A prebaked docker image that has all prequisites installed such as mongodb shared library, start container in root of this repo.

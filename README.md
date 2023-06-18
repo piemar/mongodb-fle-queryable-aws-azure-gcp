@@ -32,11 +32,11 @@ __Cipher text__ is Encrypted information unreadable by a human or computer witho
 
 __Envelope encryption__ is the practice of encrypting plain text data with a data encryption key (DEK) and then encrypting the data key using the customer master key.
 # Example Application 
-* A Python application that usses AWS KMS with MongoDB Driver
+* A Python application that usses AWS KMS or Azure KeyVault with MongoDB Driver
 * Application inserts a document with where some fields are CSFLE and Queryable Encryption enabled.
 
 # Update MongoDB connection settings and Cloud provider authentication configuration
-You will only need to update the credentials.env file with you your aws credentials(or other cloud provider). 
+You will only need to update the credentials.env file with you your aws/azure credentials(or other cloud provider). 
 
 Update the ONLY the following fields in the file  /mongodb-fle-queryable-aws-azure-gcp/kms-setup/credentials.env. DONT USE QOUTES, just = string
 
@@ -108,7 +108,7 @@ You should now see the following in the DEMO-AWS-FLE.users
 <img src="img/compass_kmip_fle.png" width="200">
 
 ## Queryable Encryption
-Will create a database with name DEMO-AWS-QUERYABLE where the keyvault collection and the user collection will be created.
+Will create a database with name DEMO-AWS-FLE where the keyvault collection and the user collection will be created.
 
 ```
 ## For AWS
@@ -121,7 +121,7 @@ python3.8 demo_queryable.py azure
 
 ```
 
-You should now see the following in the DEMO-AWS-QUERYABLE.users
+You should now see the following in the DEMO-AWS-FLE.users
 <br/>
 <img src="img/compass_kmip_queryable.png" width="200">
 

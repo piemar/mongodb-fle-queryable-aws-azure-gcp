@@ -1,6 +1,6 @@
 # MongoDB CSFLE and Queryable Encryption with AWS KMS
 
-__Setup of CSFLE and Queryable Encrption with AWS KMS__
+__Setup of CSFLE and Queryable Encrption with AWS KMS or Azure Keyvault__
 
 __SA Maintainer__: [Pierre Petersson](mailto:pierre.petersson@mongodb.com) <br/>
 __Time to setup__: 2 mins <br/>

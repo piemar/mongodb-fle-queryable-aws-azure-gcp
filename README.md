@@ -14,6 +14,12 @@ If you do not want to use the docker image and set this up on your own, follow i
 ## A running Atlas cluster 
 https://www.mongodb.com/cloud/atlas/signup
 
+# Overivew of steps
+1. Create Cloud Credentials 
+2. Update credentials.env
+3. Run configure_kms.sh (automates configuration of creation of KMS Key)
+4. Run Demo Application
+
 ## AWS Create IAM User</br>
 <a href="https://www.techtarget.com/searchcloudcomputing/tutorial/Step-by-step-guide-on-how-to-create-an-IAM-user-in-AWS"> Create an AWS IAM user and add create AWS ACCESS KEYS</a> for that user, the user must av Administrator rights to be able to run terraform to provision KMS keys, roles and policies. 
 
@@ -38,13 +44,17 @@ __Envelope encryption__ is the practice of encrypting plain text data with a dat
 # Update MongoDB connection settings and Cloud provider authentication configuration
 You will only need to update the credentials.env file with you your aws/azure credentials(or other cloud provider). 
 
-Update the ONLY the following fields in the file  /mongodb-fle-queryable-aws-azure-gcp/kms-setup/credentials.env. DONT USE QOUTES, just = string
+Update the ONLY the following fields in the file  /mongodb-fle-queryable-aws-azure-gcp/python/aws/credentials.env. DONT USE QOUTES, just = string
 
 ```
+## FOR AWS
 MONGODB_URI=mongodb+srv://user:password@demo-cluster.tcrpd.mongodb.net/?retryWrites=true&w=majority
 AWS_ACCESS_KEY_ID=AXXXXXXXXXXXXX
 AWS_SECRET_ACCESS_KEY=QhjFqDaC9EzDP8nsp1IwwXtKByvKuo28itCoK2oW
 AWS_REGION=eu-central-1
+
+## FOR Azure
+MONGODB_URI=mongodb+srv://user:password@demo-cluster.tcrpd.mongodb.net/?
 
 ```
 
@@ -60,7 +70,7 @@ docker run -it --rm  --env-file=python/aws/credentials.env  -v ${PWD}:/workspace
 docker run -it --rm  --env-file=python/azure/credentials.env  -v ${PWD}:/workspace  piepet/iaac-aws-gcp-azure
 
 # Run configuration of KMS provider, will create KMS key in AWS or Azure.
-
+## For AWS
 cd /workspace/kms-setup/aws
 ./configure_kms.sh 
 

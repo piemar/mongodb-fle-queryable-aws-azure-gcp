@@ -1,15 +1,4 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "5.4.0"
-    }
-  }
-}
 
-provider "aws" {
-  region = var.region
-}
 data "aws_caller_identity" "current" {}
 resource "aws_kms_key" "my_kms_key" {
   description = "csfle and queryable encryption kms key"
@@ -60,11 +49,3 @@ resource "aws_iam_role_policy" "kms_policy" {
   })
 }
 
-
-output "key_id" {
-  value = aws_kms_key.my_kms_key.key_id
-}
-
-output "key_arn" {
-  value = aws_kms_key.my_kms_key.arn
-}

@@ -13,4 +13,3 @@ variable key_spec {
 variable enabled {
   default = true
 }
-

@@ -13,7 +13,8 @@ If you do not want to use the docker image and set this up on your own, follow i
 # Prequisites 
 ## A running Atlas cluster 
 https://www.mongodb.com/cloud/atlas/signup
-## Create IAM User</br>
+
+## AWS Create IAM User</br>
 <a href="https://www.techtarget.com/searchcloudcomputing/tutorial/Step-by-step-guide-on-how-to-create-an-IAM-user-in-AWS"> Create an AWS IAM user and add create AWS ACCESS KEYS</a> for that user, the user must av Administrator rights to be able to run terraform to provision KMS keys, roles and policies. 
 
 
@@ -52,12 +53,26 @@ A prebaked docker image that has all prequisites installed such as mongodb share
 
 ```
 # Start docker container - Initializing KMS Setup
-docker run -it --rm  --env-file=credentials.env  -v ${PWD}:/workspace  piepet/iaac-aws-gcp-azure
+## for AWS
+docker run -it --rm  --env-file=python/aws/credentials.env  -v ${PWD}:/workspace  piepet/iaac-aws-gcp-azure
 
-# Run configuration of KMS provider, will create AWS KMS key, IAM Policy and Trust Policy
+## for Azure
+docker run -it --rm  --env-file=python/azure/credentials.env  -v ${PWD}:/workspace  piepet/iaac-aws-gcp-azure
+
+# Run configuration of KMS provider, will create KMS key in AWS or Azure.
+
 cd /workspace/kms-setup/aws
 ./configure_kms.sh 
-source ../../credentials.env
+
+## For Azure
+cd /workspace/kms-setup/azure
+az login
+./configure_kms.sh 
+
+## for AWS ##
+export $(< /workspace/python/aws/credentials.env)
+## for Azure ##
+export $(< /workspace/python/azure/credentials.env)
 ```
 
 # Test AWS as KMS provider
@@ -67,7 +82,11 @@ Python application that inserts a document with CSFLE configured. CSFLE is confi
 # Demo application that demonstrates CSFLE with AWS KMS Provider with client side schema
 
 cd /workspace/python
-python3.8 demo_aws_csfle_client_schema.py
+## For AWS
+python3.8 demo_csfle_client_schema.py aws
+## For Azure
+python3.8 demo_csfle_client_schema.py azure
+
 ```
 
 ## CSFLE Schema Stored in Database
@@ -77,7 +96,12 @@ Will create a database with name DEMO-AWS-FLE where the keyvault collection and 
 
 ```
 cd /workspace/python
-python3.8 demo_aws_csfle.py
+## For AWS
+python3.8 demo_csfle.py aws
+
+## For Azure
+python3.8 demo_csfle.py azure
+
 ```
 You should now see the following in the DEMO-AWS-FLE.users
 <br/>
@@ -87,8 +111,14 @@ You should now see the following in the DEMO-AWS-FLE.users
 Will create a database with name DEMO-AWS-QUERYABLE where the keyvault collection and the user collection will be created.
 
 ```
+## For AWS
 cd /workspace/python
-python3.8 demo_aws_queryable.py
+python3.8 demo_queryable.py aws
+
+## For Azure
+cd /workspace/python
+python3.8 demo_queryable.py azure
+
 ```
 
 You should now see the following in the DEMO-AWS-QUERYABLE.users
@@ -114,13 +144,21 @@ Before running rotate:
 ```
 ## FLE MasterKeys and DEKS
 cd /workspace/python
-python3.8 rotate_fle.py
+python3.8 rotate_fle.py aws
+
+cd /workspace/python
+python3.8 rotate_fle.py azure
+
 ```
 
 ```
 ## Queryable Encryption MasterKeys and DEKS
 cd /workspace/python
-python3.8 rotate_queryable.py 
+python3.8 rotate_queryable.py aws
+
+cd /workspace/python
+python3.8 rotate_queryable.py azure
+
 ```
 After running rotate:
 
@@ -128,8 +166,14 @@ After running rotate:
 
 # Cleanup
 If you want to rerun setup, delete vault/data folder. only the data folder. Run the following in root of this pov.
+
 ```
-cd /workspace/kms-setup/terraform 
+## For AWS
+cd /workspace/kms-setup/aws
+terraform destroy
+
+## For Azure
+cd /workspace/kms-setup/azure
 terraform destroy
 ```
 

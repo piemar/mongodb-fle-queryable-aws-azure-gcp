@@ -1,7 +1,7 @@
+import sys
 import json
 from multiprocessing import connection
 import os
-import configuration
 from pprint import pprint
 from bson.codec_options import CodecOptions
 from bson import json_util
@@ -10,13 +10,11 @@ from pymongo import MongoClient
 from pymongo.encryption import (Algorithm,
                                 ClientEncryption)
 from pymongo.encryption_options import AutoEncryptionOpts
-encrypted_namespace = "DEMO-AWS-FLE.users"
-key_vault_namespace = "DEMO-AWS-FLE.__keyVault"
-
-def configure_data_keys(aws_configuration):
+kms_provider_string=sys.argv[1]
+def configure_data_keys(provider_config):
     client_encryption = ClientEncryption(
-    aws_configuration["kms_providers"],
-    key_vault_namespace,
+    provider_config["kms_providers"],
+    configuration.key_vault_namespace,
     MongoClient(configuration.connection_uri),
     # The CodecOptions class used for encrypting and decrypting.
     # This should be the same CodecOptions instance you have configured
@@ -80,20 +78,20 @@ def configure_csfle_schema(data_keys):
     return schema
 def configure_csfle_session(schema):
     # Load the JSON Schema and construct the local schema_map option.    
-    schema_map = {encrypted_namespace: schema}
+    schema_map = {configuration.encrypted_namespace: schema}
 
     auto_encryption_opts = AutoEncryptionOpts(
-        configuration.kms_providers, key_vault_namespace, schema_map=schema_map)
+        configuration.kms_providers, configuration.key_vault_namespace, schema_map=schema_map)
     return auto_encryption_opts
 
 def reset():    
-    db_name, coll_name = encrypted_namespace.split(".", 1)
+    db_name, coll_name = configuration.encrypted_namespace.split(".", 1)
     mongo_client = MongoClient(configuration.connection_uri)
     mongo_client.drop_database(db_name)
 
 def create_user(csfle_options):
     mongo_client_csfle = MongoClient(configuration.connection_uri,auto_encryption_opts=csfle_options)    
-    db_name, coll_name = encrypted_namespace.split(".", 1)
+    db_name, coll_name = configuration.encrypted_namespace.split(".", 1)
     coll = mongo_client_csfle[db_name][coll_name]
     # Clear old data
     coll.insert_one({
@@ -132,4 +130,8 @@ def main():
     #5 Run Query
     create_user(configure_csfle_session(schema_config))
 if __name__ == "__main__":
-    main()
+    if kms_provider_string == "aws":
+        import aws.configuration as configuration
+    if kms_provider_string == "azure":
+        import azure.configuration as configuration
+    main()    

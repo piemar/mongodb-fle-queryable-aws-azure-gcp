@@ -1,5 +1,7 @@
 import os
 connection_uri = os.environ['MONGODB_URI']
+encrypted_namespace = "DEMO-AWS-FLE.users"
+key_vault_namespace = "DEMO-AWS-FLE.__keyVault"
 
 # start-kmsproviders
 provider = "aws"

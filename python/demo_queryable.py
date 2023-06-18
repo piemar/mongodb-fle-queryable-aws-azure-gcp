@@ -1,21 +1,21 @@
 """
 Automatically encrypt and decrypt a field with a KMIP KMS provider.
 """
-import configuration_queryable as configuration
+import sys
 from pprint import pprint
 from bson.codec_options import CodecOptions
 from pymongo import MongoClient
 from pymongo.encryption import ClientEncryption
 from pymongo.encryption_options import AutoEncryptionOpts
-
-def configure_data_keys(kmip_configuration):
+kms_provider_string=sys.argv[1]
+def configure_data_keys(provider_config):
     db_name, coll_name = configuration.key_vault_namespace.split(".", 1)
     key_vault_client = MongoClient(configuration.connection_uri)
     key_vault_client[db_name][coll_name].create_index(
         [("keyAltNames", 1)],unique=True,partialFilterExpression={"keyAltNames": {"$exists": True}}
     )
     client_encryption = ClientEncryption(
-        kmip_configuration["kms_providers"],
+        provider_config["kms_providers"],
         configuration.key_vault_namespace,
         MongoClient(configuration.connection_uri),
         CodecOptions(),
@@ -128,4 +128,8 @@ def main():
     #6 Run Query
     create_user(secure_client)
 if __name__ == "__main__":
+    if kms_provider_string == "aws":
+        import aws.configuration as configuration
+    if kms_provider_string == "azure":
+        import azure.configuration as configuration
     main()

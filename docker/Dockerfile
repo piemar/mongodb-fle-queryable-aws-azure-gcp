@@ -5,19 +5,7 @@ RUN apt-get update && \
     apt-get install -y unzip && \
     apt-get -y install jq && \
     apt-get -y install apt-transport-https ca-certificates gnupg    
-RUN apt-get update && apt-get install -y gnupg wget
-## AWS CLI
-RUN apt-get update && \
-    apt-get install -y \
-        unzip \
-        curl \
-    && apt-get clean \
-    && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
-    && unzip awscliv2.zip \
-    && ./aws/install \
-    && rm -rf \
-        awscliv2.zip 
-    
+RUN apt-get update && apt-get install -y gnupg wget    
     
 # MongoDB Libmongocryptd and MOngoDB Enterprise
 RUN wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | apt-key add -
@@ -27,6 +15,20 @@ RUN echo "deb [ arch=amd64,arm64 ] https://libmongocrypt.s3.amazonaws.com/apt/ub
 
 RUN apt-get update && apt-get install -y mongodb-enterprise-cryptd python3.8 python3-pip libmongocrypt0
 RUN python3 -m pip install -U pip
+
+## AWS CLI
+RUN apt install python-is-python3 -y
+RUN apt install python3.8-venv -y
+RUN apt-get update && \
+    apt-get install -y \
+        unzip \
+        curl \
+    && apt-get clean \
+    && curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" \
+    && unzip awscli-bundle.zip \
+    && ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws \
+    && rm -rf \
+        awscli-bundle.zip 
 
 ## Azure CLI
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
@@ -61,5 +63,5 @@ RUN export VAULT_ADDR=http://127.0.0.1:8200
 ENV AWS_PAGER=""
 ENV AWS_DEFAULT_OUTPUT="json"
 ENV AWS_DEFAULT_REGION="eu-central-1"
-RUN aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" && aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" && aws configure set region "$AWS_REGION" && aws configure set output "json"
+#RUN aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" && aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" && aws configure set region "$AWS_REGION" && aws configure set output "json"
 CMD bash

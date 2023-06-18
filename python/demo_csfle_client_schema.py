@@ -1,7 +1,7 @@
+import sys
 import json
 from multiprocessing import connection
 import os
-import configuration_csfle as configuration
 from pprint import pprint
 from bson.codec_options import CodecOptions
 from bson import json_util
@@ -10,10 +10,10 @@ from pymongo import MongoClient
 from pymongo.encryption import (Algorithm,
                                 ClientEncryption)
 from pymongo.encryption_options import AutoEncryptionOpts
-
-def configure_data_keys(aws_configuration):
+kms_provider_string=sys.argv[1]
+def configure_data_keys(provider_config):
     client_encryption = ClientEncryption(
-    aws_configuration["kms_providers"],
+    provider_config["kms_providers"],
     configuration.key_vault_namespace,
     MongoClient(configuration.connection_uri),
     # The CodecOptions class used for encrypting and decrypting.
@@ -130,4 +130,8 @@ def main():
     #5 Run Query
     create_user(configure_csfle_session(schema_config))
 if __name__ == "__main__":
-    main()
+    if kms_provider_string == "aws":
+        import aws.configuration as configuration
+    if kms_provider_string == "azure":
+        import azure.configuration as configuration
+    main()    

@@ -22,3 +22,5 @@ samples/aws/kms-setup/local/configuration_fle_LOCAL.py
 samples/aws/kms-setup/local/notes.txt
 samples/aws/kms-setup/local/policy.json
 samples/aws/kms-setup/local/secrets
+samples/azure/kms-setup/out_key.json
+samples/azure/kms-setup/out_keyvault_policy.json

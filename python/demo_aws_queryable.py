@@ -1,22 +1,24 @@
 """
 Automatically encrypt and decrypt a field with a KMIP KMS provider.
 """
-import configuration_queryable as configuration
+import configuration
 from pprint import pprint
 from bson.codec_options import CodecOptions
 from pymongo import MongoClient
 from pymongo.encryption import ClientEncryption
 from pymongo.encryption_options import AutoEncryptionOpts
+encrypted_namespace = "DEMO-AWS-QUERYABLE.users"
+key_vault_namespace = "DEMO-AWS-QUERYABLE.__keyVault"
 
 def configure_data_keys(kmip_configuration):
-    db_name, coll_name = configuration.key_vault_namespace.split(".", 1)
+    db_name, coll_name = key_vault_namespace.split(".", 1)
     key_vault_client = MongoClient(configuration.connection_uri)
     key_vault_client[db_name][coll_name].create_index(
         [("keyAltNames", 1)],unique=True,partialFilterExpression={"keyAltNames": {"$exists": True}}
     )
     client_encryption = ClientEncryption(
         kmip_configuration["kms_providers"],
-        configuration.key_vault_namespace,
+        key_vault_namespace,
         MongoClient(configuration.connection_uri),
         CodecOptions(),
     )
@@ -38,7 +40,7 @@ def configure_data_keys(kmip_configuration):
 def configure_queryable_session(encrypted_fields_schema):
     auto_encryption = AutoEncryptionOpts(
         configuration.kms_providers,
-        configuration.key_vault_namespace,
+        key_vault_namespace,
         encrypted_fields_map=encrypted_fields_schema,    
         schema_map=None
         
@@ -49,7 +51,7 @@ def configure_queryable_session(encrypted_fields_schema):
 def create_schema(data_keys):
     # We are creating a encrypted_fields_map that has an validation schema attached, 
     # that uses the encrypt attribute to define which fields should be encrypted.
-    encrypted_db_name, encrypted_coll_name = configuration.encrypted_namespace.split(".", 1)
+    encrypted_db_name, encrypted_coll_name = encrypted_namespace.split(".", 1)
     encrypted_fields_map = {
         f"{encrypted_db_name}.{encrypted_coll_name}": {
             "fields": [
@@ -77,13 +79,13 @@ def create_schema(data_keys):
     return encrypted_fields_map
 
 def reset():    
-    db_name, coll_name = configuration.encrypted_namespace.split(".", 1)
+    db_name, coll_name = encrypted_namespace.split(".", 1)
     mongo_client = MongoClient(configuration.connection_uri)
     mongo_client.drop_database(db_name)
 
 def create_user(secure_client):
     # Create Encrypted Collection
-    db_name, coll_name = configuration.encrypted_namespace.split(".", 1)
+    db_name, coll_name = encrypted_namespace.split(".", 1)
     db=secure_client[db_name]
     db.create_collection(coll_name)
 

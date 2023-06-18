@@ -4,7 +4,7 @@ __Setup of CSFLE and Queryable Encrption with AWS KMS or Azure Keyvault__
 
 __SA Maintainer__: [Pierre Petersson](mailto:pierre.petersson@mongodb.com) <br/>
 __Time to setup__: 2 mins <br/>
-__Time to execute__: 5 mins <br/>
+__Time to execute__: 10 mins <br/>
 
 To quickly get started this example project is utilising a docker image containing tooling required to test CSFLE with AWS KMS. 
 If you do not want to use the docker image and set this up on your own, follow instructions https://www.mongodb.com/docs/manual/core/csfle/tutorials/aws/aws-automatic/#use-automatic-client-side-field-level-encryption-with-aws
@@ -85,11 +85,11 @@ export $(< /workspace/python/aws/credentials.env)
 export $(< /workspace/python/azure/credentials.env)
 ```
 
-# Test AWS as KMS provider
+# Demo Application - using Cloud KMS Service with CSFLE
 Python application that inserts a document with CSFLE configured. CSFLE is configured to use AWS KMS KMS provider.
 
 ```
-# Demo application that demonstrates CSFLE with AWS KMS Provider with client side schema
+# Demo application that demonstrates CSFLE with KMS Provider with client side schema
 
 cd /workspace/python
 ## For AWS

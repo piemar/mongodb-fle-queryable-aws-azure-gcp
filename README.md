@@ -6,7 +6,8 @@ __SA Maintainer__: [Pierre Petersson](mailto:pierre.petersson@mongodb.com) <br/>
 __Time to setup__: 2 mins <br/>
 __Time to execute__: 10 mins <br/>
 
-To quickly get started this example project is utilising a docker image containing tooling required to test CSFLE with AWS KMS. 
+To quickly get started this example project is utilising a docker image containing tooling required to test CSFLE and Queryable Encryption with AWS KMS or Azure KeyVault. I have automated the process of setting up KMS on AWS and Azure, using terraform, and supporting scrpts to minimized manual work.
+
 If you do not want to use the docker image and set this up on your own, follow instructions https://www.mongodb.com/docs/manual/core/csfle/tutorials/aws/aws-automatic/#use-automatic-client-side-field-level-encryption-with-aws
 
 

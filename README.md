@@ -86,7 +86,7 @@ export $(< /workspace/python/azure/credentials.env)
 ```
 
 # Demo Application - using Cloud KMS Service with CSFLE
-Python application that inserts a document with CSFLE configured. CSFLE is configured to use AWS KMS KMS provider.
+Python application that inserts a document with CSFLE configured. CSFLE is configured to use AWS or Azure KMS KMS provider.
 
 ```
 # Demo application that demonstrates CSFLE with KMS Provider with client side schema

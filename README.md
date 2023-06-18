@@ -15,15 +15,14 @@ If you do not want to use the docker image and set this up on your own, follow i
 ## A running Atlas cluster 
 https://www.mongodb.com/cloud/atlas/signup
 
+## AWS Create IAM User</br>
+<a href="https://www.techtarget.com/searchcloudcomputing/tutorial/Step-by-step-guide-on-how-to-create-an-IAM-user-in-AWS"> Create an AWS IAM user and add create AWS ACCESS KEYS</a> for that user, the user must av Administrator rights to be able to run terraform to provision KMS keys, roles and policies. 
+
 # Overivew of steps
 1. Create Cloud Credentials 
 2. Update credentials.env
 3. Run configure_kms.sh (automates configuration of creation of KMS Key)
 4. Run Demo Application
-
-## AWS Create IAM User</br>
-<a href="https://www.techtarget.com/searchcloudcomputing/tutorial/Step-by-step-guide-on-how-to-create-an-IAM-user-in-AWS"> Create an AWS IAM user and add create AWS ACCESS KEYS</a> for that user, the user must av Administrator rights to be able to run terraform to provision KMS keys, roles and policies. 
-
 
 # Encryption Terminoligy
 <img src="img/envelope_encryption.png"></br>
@@ -69,39 +68,40 @@ docker run -it --rm  --env-file=python/aws/credentials.env  -v ${PWD}:/workspace
 
 ## for Azure
 docker run -it --rm  --env-file=python/azure/credentials.env  -v ${PWD}:/workspace  piepet/iaac-aws-gcp-azure
-
-# Run configuration of KMS provider, will create KMS key in AWS or Azure.
+```
+# Configure KMS with autmation
+Run configuration of KMS provider, will create KMS key in AWS or Azure.
+```
 ## For AWS
 cd /workspace/kms-setup/aws
 ./configure_kms.sh 
+export $(< /workspace/python/aws/credentials.env)
 
 ## For Azure
 cd /workspace/kms-setup/azure
 az login
 ./configure_kms.sh 
-
-## for AWS ##
-export $(< /workspace/python/aws/credentials.env)
-## for Azure ##
 export $(< /workspace/python/azure/credentials.env)
+
 ```
 
-# Demo Application - using Cloud KMS Service with CSFLE
+# Run Application - using Cloud KMS Service with CSFLE
 Python application that inserts a document with CSFLE configured. CSFLE is configured to use AWS or Azure KMS KMS provider.
 
 ```
-# Demo application that demonstrates CSFLE with KMS Provider with client side schema
-
+# Demonstrates CSFLE with KMS Provider with client side schema.
 cd /workspace/python
+
 ## For AWS
 python3.8 demo_csfle_client_schema.py aws
+
 ## For Azure
 python3.8 demo_csfle_client_schema.py azure
 
 ```
 
 ## CSFLE Schema Stored in Database
-Will create a database with name DEMO-AWS-FLE where the keyvault collection and the user collection will be created. The CSFLE schema will be stored in database, as a validation see below.
+Will create a database with name DEMO-AWS-FLE or DEMO-AZURE-FLE where the keyvault collection and the user collection will be created. The CSFLE schema will be stored in database, as a validation see below.
 <br/>
 <img src="img/fle_backend_validation.png" width="200">
 
@@ -119,7 +119,7 @@ You should now see the following in the DEMO-AWS-FLE.users
 <img src="img/compass_kmip_fle.png" width="200">
 
 ## Queryable Encryption
-Will create a database with name DEMO-AWS-FLE where the keyvault collection and the user collection will be created.
+Will create a database with name DEMO-AWS-FLE or DEMO-AZURE-QUERYABLE where the keyvault collection and the user collection will be created.
 
 ```
 ## For AWS
@@ -132,12 +132,12 @@ python3.8 demo_queryable.py azure
 
 ```
 
-You should now see the following in the DEMO-AWS-FLE.users
+You should now see the following in the DEMO-AWS-FLE.users DEMO-AZURE-FLE.users
 <br/>
 <img src="img/compass_kmip_queryable.png" width="200">
 
 
-The application will automatically encrypt/decrypt the fields defined in the validation schema thats attached to the users collection. Fields that should be shown encrypted are ssn, contact.mobile, contact.email
+The application will automatically encrypt/decrypt the fields defined in the encryption schema thats attached to the users collection. Fields that should be shown encrypted are ssn, contact.mobile, contact.email
 
 You should now be able to see in compass that fields that are encrypted have ****** shown as value. 
 

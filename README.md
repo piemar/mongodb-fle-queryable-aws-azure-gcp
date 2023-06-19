@@ -1,5 +1,4 @@
-# MongoDB CSFLE and Queryable Encryption with AWS KMS
-
+# MongoDB CSFLE and Queryable Encryption with AWS KMS and Azure KeyVault
 __Setup of CSFLE and Queryable Encrption with AWS KMS or Azure Keyvault__
 
 __SA Maintainer__: [Pierre Petersson](mailto:pierre.petersson@mongodb.com) <br/>
@@ -15,8 +14,6 @@ If you do not want to use the docker image and set this up on your own, follow i
 ## A running Atlas cluster 
 https://www.mongodb.com/cloud/atlas/signup
 
-## AWS Create IAM User</br>
-<a href="https://www.techtarget.com/searchcloudcomputing/tutorial/Step-by-step-guide-on-how-to-create-an-IAM-user-in-AWS"> Create an AWS IAM user and add create AWS ACCESS KEYS</a> for that user, the user must av Administrator rights to be able to run terraform to provision KMS keys, roles and policies. 
 
 # Overivew of steps
 1. Create Cloud Credentials 
@@ -24,24 +21,19 @@ https://www.mongodb.com/cloud/atlas/signup
 3. Run configure_kms.sh (automates configuration of creation of KMS Key)
 4. Run Demo Application
 
-# Encryption Terminoligy
-<img src="img/envelope_encryption.png"></br>
-
-__Customer Master Key (CMK)__, is the encryption key used to protect(encrypt) the Data Encryption Keys, which is on the top level of the encryption hierarchy.
-
-__The Data Encryption Key (DEK)__ is used to encrypt the data that is plain text. Once plain text is encrypted by the DEK it will be in cipher text. 
-
-__Plain text data__ is unencrypted information that you wish to protect, 
-
-
-__Cipher text__ is Encrypted information unreadable by a human or computer without decryption.
-
-__Envelope encryption__ is the practice of encrypting plain text data with a data encryption key (DEK) and then encrypting the data key using the customer master key.
 # Example Application 
 * A Python application that usses AWS KMS or Azure KeyVault with MongoDB Driver
 * Application inserts a document with where some fields are CSFLE and Queryable Encryption enabled.
 
-# Update MongoDB connection settings and Cloud provider authentication configuration
+# Create Cloud Credentials
+
+## AWS Create IAM User</br>
+<a href="https://www.techtarget.com/searchcloudcomputing/tutorial/Step-by-step-guide-on-how-to-create-an-IAM-user-in-AWS"> Create an AWS IAM user and add create AWS ACCESS KEYS</a> for that user, the user must av Administrator rights to be able to run terraform to provision KMS keys, roles and policies. 
+
+## Azure 
+We are going to use the az login to authenticate so that we can run our terraform scripts. You will need to have a valid Azure subscription.
+
+# Update credentials.env
 You will only need to update the credentials.env file with you your aws/azure credentials(or other cloud provider). 
 
 Update the ONLY the following fields in the file  /mongodb-fle-queryable-aws-azure-gcp/python/aws/credentials.env. DONT USE QOUTES, just = string
@@ -58,9 +50,7 @@ MONGODB_URI=mongodb+srv://user:password@demo-cluster.tcrpd.mongodb.net/?
 
 ```
 
-# Start Docker Container
-A prebaked docker image that has all prequisites installed such as mongodb shared library, start container in root of this repo.
-
+# Configure KMS
 ```
 # Start docker container - Initializing KMS Setup
 ## for AWS
@@ -69,7 +59,7 @@ docker run -it --rm  --env-file=python/aws/credentials.env  -v ${PWD}:/workspace
 ## for Azure
 docker run -it --rm  --env-file=python/azure/credentials.env  -v ${PWD}:/workspace  piepet/iaac-aws-gcp-azure
 ```
-# Configure KMS with autmation
+
 Run configuration of KMS provider, will create KMS key in AWS or Azure.
 ```
 ## For AWS
@@ -85,7 +75,7 @@ export $(< /workspace/python/azure/credentials.env)
 
 ```
 
-# Run Application - using Cloud KMS Service with CSFLE
+# Run Demo Application
 Python application that inserts a document with CSFLE configured. CSFLE is configured to use AWS or Azure KMS KMS provider.
 
 ```
@@ -214,3 +204,17 @@ docker buildx create --name builder —use
 docker buildx create --use
 docker buildx build --push --platform linux/amd64,linux/arm64 --tag piepet/iaac-aws-gcp-azure .
 ```
+
+# Encryption Terminoligy
+<img src="img/envelope_encryption.png"></br>
+
+__Customer Master Key (CMK)__, is the encryption key used to protect(encrypt) the Data Encryption Keys, which is on the top level of the encryption hierarchy.
+
+__The Data Encryption Key (DEK)__ is used to encrypt the data that is plain text. Once plain text is encrypted by the DEK it will be in cipher text. 
+
+__Plain text data__ is unencrypted information that you wish to protect, 
+
+
+__Cipher text__ is Encrypted information unreadable by a human or computer without decryption.
+
+__Envelope encryption__ is the practice of encrypting plain text data with a data encryption key (DEK) and then encrypting the data key using the customer master key.

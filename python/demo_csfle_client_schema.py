@@ -134,4 +134,7 @@ if __name__ == "__main__":
         import aws.configuration as configuration
     if kms_provider_string == "azure":
         import azure.configuration as configuration
-    main()    
+    if kms_provider_string == "gcp":
+        import gcp.configuration as configuration
+
+    main()

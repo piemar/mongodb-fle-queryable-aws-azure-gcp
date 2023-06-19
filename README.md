@@ -73,6 +73,19 @@ az login
 ./configure_kms.sh 
 export $(< /workspace/python/azure/credentials.env)
 
+## For GCP
+Add Billing Account Creator
+Add Cloud KMS Admin
+Add Project Creator
+
+https://console.cloud.google.com/iam-admin/iam?authuser=1&orgonly=true&organizationId=328874227573&supportedpurview=project
+
+cd /workspace/kms-setup/agcp
+gcloud config set project fle-demo-gcp
+gcloud auth application-default login
+./configure_kms.sh 
+export $(< /workspace/python/azure/credentials.env)
+
 ```
 
 # Run Demo Application

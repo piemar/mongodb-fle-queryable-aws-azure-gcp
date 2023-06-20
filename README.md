@@ -196,6 +196,9 @@ https://www.youtube.com/watch?v=bfyxplG1DVg&list=PL4RCxklHWZ9tKWSS21BmtFxOs51f-l
 Docs (very much a WIP): https://www.mongodb.com/docs/upcoming/core/queryable-encryption/ </br>
 Blog post: https://www.mongodb.com/blog/post/mongodb-releases-queryable-encryption-preview </br>
 Product page & FAQ: https://mongodb.com/products/queryable-encryption </br>
+## Known issues
+You will need to install in docker container, once released I will add it to docker container. 
+pip install 'https://github.com/mongodb/mongo-python-driver/archive/master.tar.gz'
 
 ## To build and push docker file
 The Docker container is published in DockerHub, no need to build. But if you would like to rebuild the image see below.

@@ -55,6 +55,8 @@ RUN apt-get update && apt-get install -y mongodb-enterprise-cryptd python3.8 pyt
 RUN python3 -m pip install -U pip
 COPY requirements.txt .
 RUN pip install -r requirements.txt
+## TO BE DELEtED ONCE RELEASED
+RUN pip install 'https://github.com/mongodb/mongo-python-driver/archive/master.tar.gz'
 RUN curl https://releases.hashicorp.com/vault/1.11.0-rc1+ent/vault_1.11.0-rc1+ent_linux_arm64.zip --output vault-ent.zip 
 RUN unzip -qq vault-ent.zip
 RUN cp vault /usr/bin/vault

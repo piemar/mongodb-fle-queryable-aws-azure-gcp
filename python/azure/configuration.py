@@ -14,7 +14,7 @@ kms_providers = {
 }
 # end-kmsproviders
 
-# start-datakeyopts
+# start-master-key
 master_key = {
     "keyName": os.environ['AZURE_KEY_NAME'], # "<Your Azure key name>",
     "keyVaultEndpoint": os.environ['AZURE_KEY_VAULT_ENDPOINT'] # "<Your Azure key vault endpoint>"

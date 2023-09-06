@@ -7,9 +7,9 @@ RUN apt-get update && \
     apt-get -y install apt-transport-https ca-certificates gnupg    
 RUN apt-get update && apt-get install -y gnupg wget    
     
-# MongoDB Libmongocryptd and MOngoDB Enterprise
-RUN wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | apt-key add -
-RUN echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.com/apt/ubuntu focal/mongodb-enterprise/6.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-enterprise.list
+# MongoDB Libmongocryptd and MongoDB Enterprise
+RUN wget -qO - https://www.mongodb.org/static/pgp/server-7.0.asc | apt-key add -
+RUN echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.com/apt/ubuntu focal/mongodb-enterprise/7.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-enterprise.list
 RUN wget -qO - https://www.mongodb.org/static/pgp/libmongocrypt.asc | gpg --dearmor >/etc/apt/trusted.gpg.d/libmongocrypt.gpg
 RUN echo "deb [ arch=amd64,arm64 ] https://libmongocrypt.s3.amazonaws.com/apt/ubuntu focal/libmongocrypt/1.7 universe" | tee /etc/apt/sources.list.d/libmongocrypt.list
 
